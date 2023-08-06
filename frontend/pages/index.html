@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="frontend/css/output.css" />
+    <link rel="stylesheet" href="frontend/css/input.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Handjet:wght@300&family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      src="https://unpkg.com/htmx.org@1.9.4"
+      integrity="sha384-zUfuhFKKZCbHTY6aRR46gxiqszMk5tcHjsVFxnUo8VMus4kHGVdIYVbOYYNlKmHV"
+      crossorigin="anonymous"
+    ></script>
+    <title>Blog Scraper</title>
+  </head>
+
+  <body class="background-gradient w-screen h-screen">
+    <div class="h-screen flex flex-col justify-center items-center">
+      <div class="-mt-24">
+        <h1
+          class="text-zinc-200 font-main text-2xl md:text-3xl lg:text-5xl font-extrabold text-center max-w-xl lg:max-w-3xl"
+        >
+          Seamlessly Migrate Your
+          <span class="text-slate-500">Medium</span> Blogs to Your Website
+          Without Compromising SEO
+        </h1>
+        <form  class="mt-14 flex flex-col items-center">
+          <div
+            class="bg-inherit shadow-customShadow relative before:absolute before:bg-inherit before:rounded-lg rounded-lg before:filter before:blur-sm before:shadow-whiteShadow before:inset-0"
+          >
+            <input
+              type="text"
+              class="text-slate-200 text-xl font-weird bg-[rgba(41,40,46,0.4)] border-slate-400 rounded-lg py-2 px-3 md:px-6 relative border-none active:border-none active:outline-none focus:outline-none focus:border-none"
+              placeholder="Paste medium link"
+            />
+            <button
+              type="submit"
+              class="absolute no-highlights inset-y-0 right-2"
+              hx-post="/create"
+            >
+              <img
+                height="20"
+                width="20"
+                src="https://img.icons8.com/ios/50/e4e4e7/blog.png"
+                class="opacity-50"
+                alt="blog"
+              />
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
