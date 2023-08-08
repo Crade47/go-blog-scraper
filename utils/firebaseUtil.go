@@ -2,6 +2,7 @@ package utils
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -71,6 +72,16 @@ func (fc *FirestoreClient) AddDocument(ctx context.Context, id string, data *mod
 	}
 }
 
+func (fc *FirestoreClient) GetDocument(ctx context.Context, id string) (map[string]interface{}, error) {
+	dsnap, err := fc.fsClient.Collection("blogs").Doc(id).Get(ctx)
+	if err != nil {
+		fmt.Println("Failed to get document from firestore")
+	}
+	data := dsnap.Data()
+
+	return data, nil
+}
+
 //  ------------------------------UPLOAD METHOD IN STORAGE------------------------------
 
 func (s *StorageClient) UploadFile(ctx context.Context, localFilePath string, destFileName string) (string, error) {
@@ -89,6 +100,8 @@ func (s *StorageClient) UploadFile(ctx context.Context, localFilePath string, de
 	obj := bucket.Object(destFileName)
 
 	w := obj.NewWriter(ctx)
+	w.ContentType = "text/html"
+	w.ObjectAttrs.ContentDisposition = "attachment; filename=\"" + destFileName + "\""
 
 	if _, err := io.Copy(w, file); err != nil {
 		return "", err
@@ -96,9 +109,10 @@ func (s *StorageClient) UploadFile(ctx context.Context, localFilePath string, de
 	if err := w.Close(); err != nil {
 		return "", err
 	}
-	attrs, err := obj.Attrs(ctx)
-	if err != nil {
-		return "", err
-	}
-	return attrs.MediaLink, nil
+	// attrs, err := obj.Attrs(ctx)
+	// if err != nil {
+	// 	return "", err
+	// }
+	downloadUrl := fmt.Sprintf("https://firebasestorage.googleapis.com/v0/b/%s/o/%s?alt=media", "go-scrape-test.appspot.com", destFileName)
+	return downloadUrl, nil
 }

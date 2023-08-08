@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="frontend/css/input.css" />
+    <link rel="stylesheet" href="frontend/css/output.css" />
+    <script
+      src="https://unpkg.com/htmx.org@1.9.4"
+      integrity="sha384-zUfuhFKKZCbHTY6aRR46gxiqszMk5tcHjsVFxnUo8VMus4kHGVdIYVbOYYNlKmHV"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Handjet:wght@300&family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <title>{{.Title}} | Medium Scraper</title>
+  </head>
+  <body class="background-gradient">
+    <div id="parent-div" class="relative h-screen flex flex-row justify-center items-center">
+      <div
+        class="flex p-4 shadow-customShadow rounded-lg flex-col justify-center md:flex-row items-center gap-10 border bg-inherit border-slate-500/20"
+      >
+        <img
+          src="{{.MainImageURL}}"
+          alt="main-image"
+          class="aspect-video object-cover w-56 h-auto rounded-md"
+          loading="lazy"
+        />
+        <div class="font-main w-full">
+          <div class=" ">
+            <h1 class="text-lg max-w-[160px] text-zinc-300">{{.Title}}</h1>
+            <h2 class="text-sm mt-4 text-zinc-400">
+              <a
+                href="{{.AuthorURL}}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {{.AuthorName}}
+              </a>
+            </h2>
+          </div>
+        </div>
+        <a
+          href="{{.HtmlFileURL}}"
+          class="self-end md:self-center"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <button>
+            <img
+              src="frontend/images/download-button.svg"
+              alt="download-pix"
+              class="aspect-square h-auto w-9 md:w-24"
+            />
+          </button>
+        </a>
+      </div>
+      <!-- ------------------------------BACK BUTTON------------------------------ -->
+      <div
+        class="absolute top-5 md:top-10 left-5 md:left-14 no-highlights focus:opacity-50 active:opacity-50 text-zinc-200 flex flex-row justify-center items-center"
+      >
+        <div class="text-zinc-200">
+          <button hx-get="/" hx-target="#parent-div" hx-swap="outerHTML" class="flex flex-row items-center self-end md:self-center">
+            <img
+              class="aspect-square no-highlights h-auto w-5"
+              src="frontend/images/back-button.png"
+              alt="Convert Again"
+            />
+            <h2 class="font-main text-sm">Back</h2>
+          </button>
+        </div>
+        <div id="spinner" class="htmx-indicator">
+          <div class="spinner mt-2 md:mt-[7px] ml-2 text-lg">
+            <div class="spinner-blade"></div>
+            <div class="spinner-blade"></div>
+            <div class="spinner-blade"></div>
+            <div class="spinner-blade"></div>
+            <div class="spinner-blade"></div>
+            <div class="spinner-blade"></div>
+            <div class="spinner-blade"></div>
+            <div class="spinner-blade"></div>
+            <div class="spinner-blade"></div>
+            <div class="spinner-blade"></div>
+            <div class="spinner-blade"></div>
+            <div class="spinner-blade"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

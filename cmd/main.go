@@ -9,14 +9,16 @@ import (
 
 	// "github.com/gocolly/colly"
 	// "github.com/Crade47/medium-blog-scraper/internal/scraper"
+	"github.com/Crade47/medium-blog-scraper/internal/scraper"
+	"github.com/Crade47/medium-blog-scraper/models"
 	"github.com/Crade47/medium-blog-scraper/utils"
-	// "github.com/rs/xid"
+	"github.com/rs/xid"
 )
 
 func main() {
-	// id := xid.New().String()
 
 	ctx := context.Background()
+
 	//------------------------------INIT THE DATABASE------------------------------
 	initErr := utils.Initialize(ctx, "config/firebase-config.json")
 	if initErr != nil {
@@ -30,14 +32,50 @@ func main() {
 		tmpl.Execute(w, nil)
 	}
 
-	h2 := func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("function called")
+	createHandler := func(w http.ResponseWriter, r *http.Request) {
+		id := xid.New().String()
+		url := r.PostFormValue("medium-url")
+		err := utils.CheckMediumURL(url)
+		firestoreClient := utils.GetFirestoreClient()
+		if err != nil {
+			errObj := &models.APIError{
+				Error: "Invalid URL.",
+			}
+			fmt.Println("URL error", err)
+			// utils.WriteJSON(w, http.StatusBadRequest, errObj)
+			tmpl := template.Must(template.ParseFiles("frontend/pages/index.html"))
+			tmpl.Execute(w, errObj)
+		} else {
+			_, err := scraper.MediumScraper(ctx, id, url)
+			if err != nil {
+				errObj := &models.APIError{
+					Error: "Server Error, Try again later.",
+				}
+				log.Fatal(err)
+				tmpl := template.Must(template.ParseFiles("frontend/pages/index.html"))
+				tmpl.Execute(w, errObj)
+				return
+			}
+			blogData, err := firestoreClient.GetDocument(ctx, id)
+			if err != nil {
+				errObj := &models.APIError{
+					Error: "Server Error, Try again later.",
+				}
+				log.Fatal(err)
+				tmpl := template.Must(template.ParseFiles("frontend/pages/index.html"))
+				tmpl.Execute(w, errObj)
+				return
+			}
+			tmpl := template.Must(template.ParseFiles("frontend/pages/scraped_result.html"))
+			tmpl.Execute(w, blogData)
+
+		}
 	}
 
 	fs := http.FileServer(http.Dir("frontend"))
 
 	http.HandleFunc("/", h1)
-	http.HandleFunc("/create", h2)
+	http.HandleFunc("/create", createHandler)
 	http.Handle("/frontend/", http.StripPrefix("/frontend/", fs))
 
 	//------------------------------STARTING THE SERVER------------------------------

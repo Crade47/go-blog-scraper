@@ -21,7 +21,10 @@
   </head>
 
   <body class="background-gradient w-screen h-screen">
-    <div class="h-screen flex flex-col justify-center items-center">
+    <div
+      id="parent-div"
+      class="h-screen flex flex-col justify-center items-center"
+    >
       <div class="-mt-24">
         <h1
           class="text-zinc-200 font-main text-2xl md:text-3xl lg:text-5xl font-extrabold text-center max-w-xl lg:max-w-3xl"
@@ -30,19 +33,25 @@
           <span class="text-slate-500">Medium</span> Blogs to Your Website
           Without Compromising SEO
         </h1>
-        <form  class="mt-14 flex flex-col items-center">
+        <form
+          hx-post="/create"
+          hx-target="#parent-div"
+          hx-swap="outerHTML"
+
+          class="mt-14 flex justify-center items-center"
+        >
           <div
             class="bg-inherit shadow-customShadow relative before:absolute before:bg-inherit before:rounded-lg rounded-lg before:filter before:blur-sm before:shadow-whiteShadow before:inset-0"
           >
             <input
+              name="medium-url"
               type="text"
-              class="text-slate-200 text-xl font-weird bg-[rgba(41,40,46,0.4)] border-slate-400 rounded-lg py-2 px-3 md:px-6 relative border-none active:border-none active:outline-none focus:outline-none focus:border-none"
+              class="text-slate-200 text-xl font-weird bg-[rgba(41,40,46,0.4)] border-slate-400 rounded-lg py-4 pl-4 px-9 relative border-none active:border-none active:outline-none focus:outline-none focus:border-none"
               placeholder="Paste medium link"
             />
             <button
               type="submit"
-              class="absolute no-highlights inset-y-0 right-2"
-              hx-post="/create"
+              class="absolute no-highlights inset-y-0 right-2 no-highlights"
             >
               <img
                 height="20"
@@ -52,8 +61,31 @@
                 alt="blog"
               />
             </button>
+
+            <div id="spinner" class="htmx-indicator text-xl absolute inset-y-0 -right-8 flex items-center justify-center">
+              <div class="spinner">
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+                <div class="spinner-blade"></div>
+              </div>
+            </div>
           </div>
         </form>
+        <h2
+          id="errorText"
+          class="text-red-500 text-center font-main text-sm pt-4"
+        >
+          {{.Error}}
+        </h2>
       </div>
     </div>
   </body>

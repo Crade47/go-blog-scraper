@@ -30,9 +30,7 @@ func UploadHTML(ctx context.Context, destination string) (string, error) {
 }
 
 func MediumScraper(ctx context.Context, id string, url string) (*models.Blog, error) {
-	c := colly.NewCollector(
-		colly.AllowedDomains("medium.com"),
-	)
+	c := colly.NewCollector()
 	// CREATING A FILE
 	file, err := os.OpenFile("output.html", os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil {
@@ -44,7 +42,13 @@ func MediumScraper(ctx context.Context, id string, url string) (*models.Blog, er
 	var newBlog *models.Blog
 
 	//Assigning ID
-	newBlog.ID = id
+	if newBlog == nil {
+		newBlog = &models.Blog{
+			ID: id,
+		}
+	} else {
+		newBlog.ID = id
+	}
 
 	//------------------------------CALL BACK FUNCTIONS------------------------------
 
@@ -81,6 +85,7 @@ func MediumScraper(ctx context.Context, id string, url string) (*models.Blog, er
 
 		name := e.Attr("name")
 		property := e.Attr("property")
+		content := e.Attr("content")
 
 		// FILTERING THE USEFUL SEO META TAGS
 		if name == "description" || name == "keywords" || property == "og:title" || property == "og:description" ||
@@ -97,6 +102,19 @@ func MediumScraper(ctx context.Context, id string, url string) (*models.Blog, er
 			if err != nil {
 				fmt.Println("Error writing to the file")
 				log.Fatalln(writeErr)
+			}
+		}
+
+		//Storing the img link
+		if property == "og:image" {
+
+			if newBlog == nil {
+				newBlog = &models.Blog{
+					MainImageURL: content,
+				}
+			} else {
+
+				newBlog.MainImageURL = content
 			}
 		}
 
@@ -193,6 +211,9 @@ func MediumScraper(ctx context.Context, id string, url string) (*models.Blog, er
 	}
 
 	newBlog.HtmlFileURL = htmlUrl
+	//------------------------------UPDATING FIRESTORE------------------------------
+	firestoreClient := utils.GetFirestoreClient()
+	firestoreClient.AddDocument(ctx, id, newBlog)
 
 	return newBlog, nil
 }

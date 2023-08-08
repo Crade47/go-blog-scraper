@@ -4,7 +4,6 @@ go 1.20
 
 require (
 	cloud.google.com/go/firestore v1.11.0
-	firebase.google.com/go v3.13.0+incompatible
 	firebase.google.com/go/v4 v4.12.0
 	github.com/PuerkitoBio/goquery v1.8.1
 	github.com/gocolly/colly v1.2.0
